@@ -1,0 +1,90 @@
+@using Microsoft.AspNetCore.Html
+@model Services.Freelancer.Models.FrontOffice.BrowseCandidatModel
+
+@{
+    ViewBag.Title = "Candidates";
+    Layout = "_Layout";
+}
+
+<div class="page-content bg-white">
+        <!-- inner page banner -->
+        <div class="dez-bnr-inr overlay-black-middle" style="background-image:url(/images/banner/bnr1.jpg);">
+            <div class="container">
+                <div class="dez-bnr-inr-entry">
+                    <h1 class="text-white">Browse candidates</h1>
+					<!-- Breadcrumb row -->
+					<div class="breadcrumb-row">
+						<ul class="list-inline">
+							<li><a href="#">Home</a></li>
+							<li>Browse candidates</li>
+						</ul>
+					</div>
+					<!-- Breadcrumb row END -->
+                </div>
+            </div>
+        </div>
+        <!-- inner page banner END -->
+		<div class="content-block">
+            <div class="section-full bg-white browse-job content-inner-2">
+				<div class="container">
+					<div class="row">
+						<div class="col-xl-9 col-lg-8">
+							@if (Model.Candidats.Count == 0)
+							{
+								<p>No results were found!</p>
+							}
+							<ul class="post-job-bx">
+								@foreach (var user in Model.Candidats)
+								{
+									<li>
+										<a href="/message?id=@user.IdUser">
+											<div class="d-flex m-b30 user-list">
+												<div class="job-post-company">
+													<span><img src="/images/user.png"/></span>
+												</div>
+												<div class="job-post-info">
+													<h4>@user.FirstName @user.LastName</h4>
+													<div class="d-flex">
+														<div class="job-time mr-auto">
+															@foreach (var competence in user.Competences)
+															{
+																<span>@competence.CompetenceName</span>
+															}
+														</div>
+													</div>
+												</div>
+											</div>
+											<span class="post-like ti-comment"></span>
+										</a>
+									</li>
+								}
+							</ul>
+							<div class="pagination-bx m-t30">
+								<nav aria-label="Page navigation example">
+									<ul class="pagination">
+										@(new HtmlString(ViewBag.pagination))
+									</ul>
+								</nav>
+							</div>
+						</div>
+						<div class="col-xl-3 col-lg-4">
+							<div class="sticky-top">
+								@using(Html.BeginForm("browse", "Candidat", FormMethod.Get))
+								{
+									<div class="clearfix m-b30">
+                                    	<h5 class="widget-title font-weight-700 text-uppercase">NAME</h5>
+                                    	<div class="">
+                                    		<input type="text" name="nom" class="form-control" placeholder="Enter a name">
+                                    	</div>
+                                    	<div class="" style="margin-top: 15px; float: right;">
+                                    		<button type="submit" class="site-button"><i class="fa fa-search"></i> Search</button>
+                                    	</div>
+                                    </div>
+								}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>

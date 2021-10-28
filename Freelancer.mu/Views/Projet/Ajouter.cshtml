@@ -1,0 +1,124 @@
+@model Services.Freelancer.Models.ProjectModel
+
+@{
+    ViewBag.Title = "Add jobs";
+}
+
+<div class="page-content bg-white">
+    <!-- inner page banner -->
+    <div class="dez-bnr-inr overlay-black-dark" style="background-image:url(/images/banner/bnr1.jpg);">
+        <div class="container">
+            <div class="dez-bnr-inr-entry">
+                <h1 class="text-white">Add jobs</h1>
+                <!-- Breadcrumb row -->
+                <div class="breadcrumb-row">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li>Add jobs</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumb row END -->
+            </div>
+        </div>
+    </div>
+    <!-- inner page banner END -->
+    <!-- contact area -->
+    <div class="content-block">
+        <!-- Submit Resume -->
+        <div class="section-full bg-white submit-resume content-inner-2">
+            <div class="container">
+                @using (Html.BeginForm("Add", "Projet", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        @if (ViewBag.error != null)
+                        {
+                            <p style="color: red;" class="font-weight-600">@ViewBag.error</p>
+                        }
+                        @if (ViewBag.success != null)
+                        {
+                            <p style="color: green;" class="font-weight-600">@ViewBag.success</p>
+                        }
+                        <label>Title</label>
+                        @Html.TextBoxFor(m => m.Title, new {@type = "text", @class = "form-control", placeholder = "Enter title"})
+                    </div>
+                    <div class="form-group">
+                        <label>Company description</label>
+                        @Html.TextAreaFor(m => m.DescriptionEntreprise, new {@type = "text", @class = "form-control", placeholder = "Enter company description"})
+                    </div>
+                    <div class="form-group">
+                        <label>Salary</label>
+                        @Html.TextBoxFor(m => m.Price, new {@type = "number", min = 0, @class = "form-control", placeholder = "Amount in MUR"})
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline</label>
+                        @Html.TextBoxFor(m => m.ApplyBefore, new {@type = "date", required = "required", @class = "form-control", placeholder = "Deadline"})
+                    </div>
+                    <div class="form-group">
+                        <label>Job description</label>
+                        @Html.TextAreaFor(m => m.DescriptionOffre, new {@required = "required", @class = "form-control", placeholder = "Describe jobs"})
+                        
+                        @Html.TextBoxFor(m => m.SelectedCompetence, new {type = "hidden"})
+                    </div>
+                    <div class="form-group">
+                        <label>Required skills</label> <br />
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                            Choose...
+                        </button>
+                        <span style="margin-left: 15px;" id="selectedText"></span>
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Choose skills</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @foreach (var competence in Model.CompetenceRequis)
+                                        {
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" value="@(competence.IdCompetence)" class="custom-control-input" id="check-@(competence.IdCompetence)" name="check-@(competence.IdCompetence)">
+                                                <label id="check-@(competence.IdCompetence)" class="custom-control-label" for="check-@(competence.IdCompetence)">@competence.CompetenceName</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="valider()">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="site-button">Share</button>
+                }
+            </div>
+        </div>
+        <!-- Submit Resume END -->
+    </div>
+</div>
+
+<script>
+    function valider() {
+        let checkBoxList = $(".custom-control-input");
+        let labelList = $(".custom-control-label");
+        let selectedId = "";
+        let selectedLabel = "";
+        const count = checkBoxList.length;
+        for (let i = 0; i < count; i++) {
+            let checkBox = checkBoxList[i];
+            if (checkBox.checked) {
+                selectedId += checkBox.value + ",";
+                selectedLabel += labelList[i].innerHTML;
+                if (i + 1 < count) {
+                    selectedLabel += ", ";    
+                }
+            }
+        }
+        $("#SelectedCompetence").val(selectedId);
+        $("#selectedText").html(selectedLabel);
+    }
+</script>

@@ -1,0 +1,22 @@
+@model Services.Freelancer.Models.MessageViewModel
+
+<div class="list-group rounded-0">
+    @if (Model != null)
+    {
+        <a class="list-group-item list-group-item-action active text-white rounded-0">
+            <div class="media">
+                <img src="https://bootstrapious.com/i/snippets/sn-chat/avatar.svg" alt="user" width="50" class="rounded-circle">
+                <div class="media-body ml-4">
+                    @if (Model.LastMessageModel != null)
+                    {
+                        <input type="hidden" id="receiver-id" value="@Model.LastMessageModel.UserId"/>
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <h6 class="mb-0">@Model.LastMessageModel.UserName</h6><small class="small font-weight-bold">@Model.LastMessageModel.DisplayLastMessageDate</small>
+                        </div>
+                        <p class="font-italic mb-0 text-small">@Model.LastMessageModel.LastMessage</p>
+                    }
+                </div>
+            </div>
+        </a>
+    }
+</div>

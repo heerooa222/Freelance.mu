@@ -1,0 +1,108 @@
+@using Microsoft.AspNetCore.Html
+@model Services.Freelancer.Models.ProjectModel
+
+@{
+    ViewBag.title = "Job details";
+}
+
+<div class="page-content bg-white">
+	<!-- inner page banner -->
+	<div class="dez-bnr-inr overlay-black-middle" style="background-image:url(/images/banner/bnr1.jpg);">
+		<div class="container">
+			<div class="dez-bnr-inr-entry">
+				<h1 class="text-white">Details</h1>
+				<!-- Breadcrumb row -->
+				<div class="breadcrumb-row">
+					<ul class="list-inline">
+						<li>
+							<a href="#">Home</a>
+						</li>
+						<li>Details</li>
+					</ul>
+				</div>
+				<!-- Breadcrumb row END -->
+			</div>
+		</div>
+	</div>
+	<!-- inner page banner END -->
+	<!-- contact area -->
+	<div class="content-block">
+		<!-- Job Detail -->
+		<div class="section-full content-inner-1">
+			<div class="container">
+				@if (ViewBag.error != null)
+				{
+					<p style="color: red;">@ViewBag.error</p>
+				}
+				@if (ViewBag.success != null)
+                {
+                	<p style="color: green;">@ViewBag.success</p>
+                }
+				@if (Model != null)
+				{
+					<div class="row">
+						<div class="col-lg-4">
+							<div class="sticky-top">
+								<div class="row">
+									<div class="col-lg-12 col-md-6">
+										<div class="widget bg-white p-lr20 p-t20  widget_getintuch radius-sm">
+											<h4 class="text-black font-weight-700 p-t10 m-b15">Job details</h4>
+											<ul>
+												<li>
+													<i class="ti-user"></i><strong class="font-weight-700 text-black">Employer</strong><span class="text-black-light"> @Model.AddedByUser.CompanyName </span>
+												</li>
+												<li><i class="ti-money"></i><strong class="font-weight-700 text-black">Salary</strong>@(String.Format("{0:0,0}", Model.Price)) MUR</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-8">
+							<div class="job-info-box">
+								<h3 class="m-t0 m-b10 font-weight-700 title-head">
+									<a href="#" class="text-secondry m-r30">@Model.Title</a>
+								</h3>
+								<ul class="job-info">
+									<li><i class="ti-time text-black m-r5"></i> <strong>Deadline:</strong> @Model.ApplyBefore.ToString("dd MMMM yyyy")</li>
+									<li><i class="ti-user text-black m-r5"></i> <strong>Added by:</strong> @Model.AddedByUser.FirstName @Model.AddedByUser.LastName</li>
+									<li><i class="ti-calendar text-black m-r5"></i> <strong>Added:</strong> @Model.TimeString</li>
+								</ul>
+								@(new HtmlString(Model.Description))
+								<h5 class="font-weight-600">Required skills:</h5>
+								<div class="dez-divider divider-2px bg-gray-dark mb-4 mt-0"></div>
+								<ul class="list-num-count no-round">
+									@foreach (var competence in Model.CompetenceRequis)
+									{
+										<li>@competence.CompetenceName</li>
+									}
+								</ul>
+								@if (!Model.AlreadyApplied)
+								{
+									<form method="post" action="/projet/postuler">
+										@Html.AntiForgeryToken()
+										<input type="hidden" name="projectId" value="@Model.IdProject">
+										<input type="submit" class="site-button" value="Apply"/>
+									</form>
+								}
+								else
+								{
+									<button type="button" disabled class="btn btn-light">Already applied</button>
+								}
+							</div>
+						</div>
+					</div>
+				}
+				else
+				{
+					<p>No results were found.</p>
+				}
+			</div>
+		</div>
+		<!-- Job Detail -->
+		<!-- Our Jobs -->
+		<div class="section-full content-inner">
+		</div>
+		<!-- Our Jobs END -->
+	</div>
+</div>

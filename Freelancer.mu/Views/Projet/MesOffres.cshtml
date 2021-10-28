@@ -1,0 +1,169 @@
+@model List<Services.Freelancer.Models.ProjectModel>
+@using Microsoft.AspNetCore.Html
+@{
+    ViewBag.title = "Submitted Jobs";
+}
+
+
+<div class="page-content bg-white">
+	<!-- inner page banner -->
+	<div class="dez-bnr-inr overlay-black-middle" style="background-image:url(/images/banner/bnr1.jpg);">
+		<div class="container">
+			<div class="dez-bnr-inr-entry">
+				<h1 class="text-white">Submitted jobs</h1>
+				<!-- Breadcrumb row -->
+				<div class="breadcrumb-row">
+					<ul class="list-inline">
+						<li>
+							<a href="#">Home</a>
+						</li>
+						<li>Submitted jobs</li>
+					</ul>
+				</div>
+				<!-- Breadcrumb row END -->
+			</div>
+		</div>
+	</div>
+	<!-- inner page banner END -->
+	<!-- contact area -->
+	<div class="content-block">
+		<!-- Browse Jobs -->
+		<div class="section-full bg-white browse-job content-inner-2">
+			<div class="container">
+				<div class="row">
+					<div class="col-xl-9 col-lg-8">
+						<h5 class="widget-title font-weight-700 text-uppercase">Submitted jobs</h5>
+						<ul class="post-job-bx">
+							@foreach (var projet in Model)
+							{
+								<li>
+									<a style="cursor: pointer;" onclick="showModal('@projet.IdProject')">
+										<div class="d-flex m-b30">
+											<div class="job-post-company">
+												<span>
+													<img src="~/images/logo/icon1.png"/>
+												</span>
+											</div>
+											<div class="job-post-info">
+												<h4>@projet.Title</h4>
+												<ul>
+													<li><i class="fa fa-calendar"></i> Deadline @projet.ApplyBefore.ToString("dd MMMM yyyy")</li>
+													<li><i class="fa fa-clock-o"></i> Submitted @projet.TimeString</li>
+												</ul>
+											</div>
+										</div>
+										<div class="d-flex">
+											<div class="job-time mr-auto">
+												<span>@projet.NombreCandidatures applied</span>
+											</div>
+											<div class="salary-bx">
+												<span>@(String.Format("{0:0,0}", projet.Price)) MUR</span>
+											</div>
+										</div>
+									</a>
+								</li>
+							}
+							@if (!Model.Any())
+							{
+								<p>No result were found.</p>
+							}
+						</ul>
+						<div class="pagination-bx m-t30">
+							<ul class="pagination">
+								@(new HtmlString(ViewBag.pagination))
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Browse Jobs END -->
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="candidatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Candidates</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" id="valider-candidat">Validate</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	function showModal(projectId) 
+	{
+		$("#candidatModal").modal();
+		$.ajax({
+			url: "/projet/GetApplicants",
+			method: "GET",
+			data: {projectId: projectId},
+			success : function (data) {
+				let paragraphe = "";
+				if (data.status === 1) {
+					paragraphe = "<p>Already assigned to:</p>"
+					for (let i = 0; i < data.data.length; i++) {
+						if (data.data[i].isAssignedTo === true) {
+							paragraphe += "<li>" + data.data[i].firstName + " " + data.data[i].lastName + "</li>";	
+						}
+					}
+					let button = $("#valider-candidat");
+					if (button) button.attr("disabled", "disabled");
+				}
+				else if (data.status === 0) {
+					if (data.data.length > 0) {
+					let button = $("#valider-candidat");
+					if (button) button.removeAttr("disabled");
+						paragraphe = "<p>Assign to: </p>";
+						for (let i = 0; i < data.data.length; i++) {
+							paragraphe += "<input type='radio' class='user-radio' name='user' id='radio-" + i + "' value='" + data.data[i].idUser + "' /> ";
+							paragraphe += "<label for='radio-" + i + "'>  " + data.data[i].firstName + " " + data.data[i].lastName + "</label>";	
+							paragraphe += "<br />";	
+						}
+					}
+					else if (data.data.length === 0) {
+						let button = $("#valider-candidat");
+						if (button) button.attr("disabled", "disabled");
+						paragraphe = "<p>No application.</p>";	
+					}
+				}
+				let modalBody = $("#modal-body");
+				if (modalBody) modalBody.html(paragraphe);
+			},
+			error : function (error) {
+				console.log(error);	
+			}
+		});
+		let button = $("#valider-candidat");
+		if (button) button.attr("onclick", "selectUser('" + projectId + "')");
+	}
+	
+	function selectUser(projectId) {
+		let selectedUser = $(".user-radio");
+		for (let i = 0; i < selectedUser.length; i++) {
+			if (selectedUser[i].checked) {
+				let userId = selectedUser[i].value;
+				$.ajax({
+					url: "/projet/SelectUser",
+					method: "POST",
+					data: {projectId: projectId, userId: userId},
+					success : function () {
+						$("#candidatModal").modal('hide');
+					}
+				});
+			}
+		}
+	}
+</script>

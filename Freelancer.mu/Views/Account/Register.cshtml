@@ -1,0 +1,160 @@
+@using Services.Freelancer.Models
+@model Services.Freelancer.Models.RegisterModel
+@{
+    ViewBag.title = "Register";
+    var skills = ViewBag.skills as List<CompetenceModel>;
+}
+
+<div class="page-content bg-white">
+    <!-- inner page banner -->
+    <div class="dez-bnr-inr overlay-black-middle bg-pt" style="background-image:url(/images/banner/bnr2.jpg);">
+        <div class="container">
+            <div class="dez-bnr-inr-entry">
+                <h1 class="text-white">Register</h1>
+                <!-- Breadcrumb row -->
+                <div class="breadcrumb-row">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li>Register</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumb row END -->
+            </div>
+        </div>
+    </div>
+    <!-- inner page banner END -->
+    <!-- contact area -->
+    <div class="section-full content-inner shop-account">
+        <!-- Product -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="font-weight-700 m-t0 m-b20">Create an account</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 m-b30">
+                    <div class="p-a30 border-1  max-w500 m-auto">
+                        <div class="tab-content active">
+                            @using (Html.BeginForm("SaveUser", "Account", FormMethod.Post, new { id = "login", @class = "tab-pane active col-12 p-a0" }))
+                            {
+                                <h4 class="font-weight-700">PERSONNAL INFORMATION</h4>
+                                <p class="font-weight-600">If you have an account with us, <a href="/account/login">please log in!</a></p>
+                                @if (ViewBag.error != null)
+                                {
+                                    <p class="font-weight-600" style="color: red;">@ViewBag.error</p>
+                                }
+                                <div class="form-group">
+                                    <label class="font-weight-700">Firstname *</label>
+                                    @Html.TextBoxFor(model => model.FirstName, new {@class = "form-control", required = "required", placeholder="Enter firstname"})
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-700">Lastname *</label>
+                                    @Html.TextBoxFor(model => model.LastName, new {@class = "form-control", required = "required", placeholder="Enter lastname"})
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-700">I am</label>
+                                    <select class="bs-select-hidden" id="UserType" name="UserType" onchange="hideCompany()">
+                                        @foreach (var type in (List<TypeModel>)ViewBag.types)
+                                        {
+                                            <option value="@type.IdType">@type.TypeName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group" id="company-div" style="display: none;">
+                                    <label class="font-weight-700">Company name</label>
+                                    @Html.TextBoxFor(model => model.CompanyName, new {@class = "form-control", placeholder="Enter company name"})
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-700">E-mail *</label>
+                                    @Html.TextBoxFor(model => model.Email, new {@class = "form-control", required = "required", placeholder="Enter e-mail"})
+                                </div>
+                                <div class="form-group">
+                                    <label>My skills</label> <br/>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                        Choose...
+                                    </button>
+                                    <span style="margin-left: 15px;" id="selectedText"></span>
+                                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Choose skills</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @foreach (var competence in skills)
+                                                    {
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" value="@(competence.IdCompetence)" class="custom-control-input" id="check-@(competence.IdCompetence)" name="check-@(competence.IdCompetence)">
+                                                            <label id="check-@(competence.IdCompetence)" class="custom-control-label" for="check-@(competence.IdCompetence)">@competence.CompetenceName</label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="valider()">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-700">Password *</label>
+                                    @Html.TextBoxFor(model => model.Password, new {type="password", @class = "form-control", required = "required", placeholder="Enter Password"})
+                                </div>
+                                <div id="my-skills">
+
+                                </div>
+                                <div class="text-left">
+                                    <button class="site-button button-lg outline outline-2">Signup</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Product END -->
+    </div>
+    <!-- contact area  END -->
+</div>
+
+<script>
+    function hideCompany() {
+        const UserType = $('#UserType');
+        if (UserType) {
+            const userTypeValue = UserType.val();
+                const company = $('#company-div');
+            if (userTypeValue === '6e576a1e-5d1a-4caf-86c5-1542659b4b8a') {
+                company.attr('style', 'display: none;');
+                $('#CompanyName').val('');
+            }
+            else {
+                company.removeAttr('style');
+            }
+        }
+    }
+    
+    function valider() {
+        let checkBoxList = $(".custom-control-input");
+        let labelList = $(".custom-control-label");
+        let mySkills = "";
+        let selectedLabel = "";
+        let count = 0;
+        for (let i = 0; i < checkBoxList.length; i++) {
+            let checkBox = checkBoxList[i];
+            if (checkBox.checked) {
+                mySkills += `<input type="hidden" id="Competences[${count}].IdCompetence" name="Competences[${count}].IdCompetence" value="${checkBox.value}" />`;
+                selectedLabel += labelList[i].innerHTML;
+                selectedLabel += ", ";
+                count++;
+            }
+        }
+        $("#my-skills").html(mySkills);
+        $("#selectedText").html(selectedLabel);
+    }
+</script>

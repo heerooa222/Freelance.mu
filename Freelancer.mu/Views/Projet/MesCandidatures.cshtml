@@ -1,0 +1,82 @@
+@using Microsoft.AspNetCore.Html
+@model List<Services.Freelancer.Models.ProjectModel>
+@{
+    ViewBag.Title = "Mes Candidatures";
+}
+
+<div class="page-content bg-white">
+	<!-- inner page banner -->
+	<div class="dez-bnr-inr overlay-black-middle" style="background-image:url(/images/banner/bnr1.jpg);">
+		<div class="container">
+			<div class="dez-bnr-inr-entry">
+				<h1 class="text-white">My applications</h1>
+				<!-- Breadcrumb row -->
+				<div class="breadcrumb-row">
+					<ul class="list-inline">
+						<li>
+							<a href="#">Home</a>
+						</li>
+						<li>My applications</li>
+					</ul>
+				</div>
+				<!-- Breadcrumb row END -->
+			</div>
+		</div>
+	</div>
+	<!-- inner page banner END -->
+	<!-- contact area -->
+	<div class="content-block">
+		<!-- Browse Jobs -->
+		<div class="section-full bg-white browse-job content-inner-2">
+			<div class="container">
+				<div class="row">
+					<div class="col-xl-9 col-lg-8">
+						<h5 class="widget-title font-weight-700 text-uppercase">My applications</h5>
+						<ul class="post-job-bx">
+							@foreach (var projet in Model)
+							{
+								<li>
+									<a href="/projet/detail?projetid=@projet.IdProject">
+										<div class="d-flex m-b30">
+											<div class="job-post-company">
+												<span>
+													<img src="~/images/logo/icon1.png"/>
+												</span>
+											</div>
+											<div class="job-post-info">
+												<h4>@projet.Title</h4>
+												<ul>
+													<li><i class="fa fa-building"></i> @projet.AddedByUser.CompanyName</li>
+													<li><i class="fa fa-calendar"></i> Applied on @projet.ApplyBefore.ToString("dd MMMM yyyy")</li>
+													<li><i class="fa fa-clock-o"></i> @projet.TimeString</li>
+												</ul>
+											</div>
+										</div>
+										<div class="d-flex">
+											<div class="job-time mr-auto">
+												<span>@projet.MyStatus</span>
+											</div>
+											<div class="salary-bx">
+												<span>@(String.Format("{0:0,0}", projet.Price)) MUR</span>
+											</div>
+										</div>
+									</a>
+								</li>
+							}
+							@if (!Model.Any())
+							{
+								<p>No result were found.</p>
+							}
+						</ul>
+						<div class="pagination-bx m-t30">
+							<ul class="pagination">
+								@(new HtmlString(ViewBag.pagination))
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Browse Jobs END -->
+	</div>
+</div>

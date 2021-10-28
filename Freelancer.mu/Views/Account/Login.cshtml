@@ -1,0 +1,78 @@
+@model Services.Freelancer.Models.UserModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="page-content bg-white">
+    <!-- inner page banner -->
+    <div class="dez-bnr-inr overlay-black-middle bg-pt" style="background-image:url(/images/banner/bnr2.jpg);">
+        <div class="container">
+            <div class="dez-bnr-inr-entry">
+                <h1 class="text-white">Login</h1>
+                <!-- Breadcrumb row -->
+                <div class="breadcrumb-row">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li>Login</li>
+                    </ul>
+                </div>
+                <!-- Breadcrumb row END -->
+            </div>
+        </div>
+    </div>
+    <!-- inner page banner END -->
+    <!-- contact area -->
+    <div class="section-full content-inner-2 shop-account">
+        <!-- Product -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="font-weight-700 m-t0 m-b20">Login Your Account</h3>
+                </div>
+            </div>
+            <div>
+                <div class="max-w500 m-auto m-b30">
+                    <div class="p-a30 border-1 seth">
+                        <div class="tab-content nav">
+                            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new {id = "login", @class = "tab-pane active col-12 p-a0"}))
+                            {
+                                @Html.AntiForgeryToken()
+                                <h4 class="font-weight-700">Login</h4>
+                                if (ViewBag.error != null)
+                                {
+                                    <p style="color: red;" class="font-weight-600">@ViewBag.error</p>
+                                }
+                                else
+                                {
+                                    <p class="font-weight-600">If you have an account with us, please log in!</p>
+                                }
+                                <div class="form-group">
+                                    <label class="font-weight-700">E-MAIL *</label>
+                                    @Html.TextBoxFor(m => m.Identifiant, new {type = "text", required = "required", @class = "form-control", placeholder = "Your mail"})
+                                </div>
+                                <div class="form-group">
+                                    <label class="font-weight-700">PASSWORD *</label>
+                                    @Html.TextBoxFor(m => m.Password, new {type = "password", required = "required", @class = "form-control", placeholder = "Password"})
+                                </div>
+                                @if (ViewBag.Next != null)
+                                {
+                                    @Html.TextBoxFor(m => m.Next, new {type = "hidden", value = ViewBag.Next})
+                                }
+                                <div class="text-left">
+                                    <button class="site-button m-r5 button-lg">Login</button>
+                                    <a href="/account/register" class="m-l5"><i class="fa fa-user-plus"></i> Register</a>
+                                </div>
+                                
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Product END -->
+    </div>
+    <!-- contact area  END -->
+</div>
